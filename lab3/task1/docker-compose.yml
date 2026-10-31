@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: flask_trace_app
+    ports:
+      - "8080:8080"
+    environment:
+      - OTEL_SERVICE_NAME=dice-server
+    depends_on:
+      - jaeger
+    networks:
+      - monitoring
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: jaeger
+    ports:
+      - "16686:16686"  
+      - "6831:6831/udp"
+      - "4317:4317"    
+      - "4318:4318"   
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
